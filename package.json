@@ -1,0 +1,38 @@
+{
+  "name": "tg",
+  "version": "1.0.0",
+  "description": "Redirect Telegram links directly to the Telegram App",
+  "main": "index.js",
+  "scripts": {
+    "start": "rollup -c --watch",
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roslovets/tg.git"
+  },
+  "keywords": [],
+  "author": "Pavel Roslovets",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roslovets/tg/issues"
+  },
+  "homepage": "https://github.com/roslovets/tg#readme",
+  "devDependencies": {
+    "autoprefixer": "^9.5.0",
+    "cssnano": "^4.1.10",
+    "normalize.css": "^8.0.1",
+    "postcss": "^7.0.14",
+    "postcss-import": "^12.0.1",
+    "rollup": "^1.8.0",
+    "rollup-plugin-bundle-html": "^0.2.1",
+    "rollup-plugin-sass": "^1.2.2",
+    "rollup-plugin-terser": "^5.1.1",
+    "web-resource-inliner": "^4.3.1"
+  },
+  "browserslist": [
+    "last 2 version",
+    "> 0.2%",
+    "ie >= 11"
+  ]
+}
