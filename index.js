@@ -20,11 +20,14 @@ if (url) {
 
     document.getElementById('tglabel').textContent = TGSTR;
 
-    tgopen.href = window.location.hash.slice(1);
+    var repo = window.location.hash.slice(1);
 
     var path = tgopen.pathname.split('/', 3);
     var str = '';
     var ischannel = false;
+
+    console.log(path);
+    console.log(repo);
 
     switch (path[1]) {
         case 'socks':
@@ -64,7 +67,23 @@ if (url) {
     target.style.display = 'inline-block';
 
     if (str) {
-        window.location.href = str;
+        //window.location.href = str;
+        window.rName = '';
+        window.rver = '';
+        var cbInfo = function(res) {
+            console.log(res);
+            window.rName = res.name;
+            document.getElementById('tlabel').textContent = window.rName + ' ' + window.rVer;
+        }
+
+        var cbLatest = function(res) {
+            console.log(res);
+            window.rVer = res.name;
+            document.getElementById('tlabel').textContent = window.rName + ' ' + window.rVer;
+            document.getElementById('target').href = res.html_url;
+        }
+        httpGetAsync('https://api.github.com/repos/' + repo, cbInfo);
+        httpGetAsync('https://api.github.com/repos/' + repo + '/releases/latest', cbLatest);
     }
 }
 else {
@@ -74,3 +93,15 @@ else {
     document.getElementById('instr').style.display = 'inline-block';
 }
 tgopen.style.display = 'inline-block';
+
+
+function httpGetAsync(theUrl, callback)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(JSON.parse(xmlHttp.responseText));
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+}

@@ -1,7 +1,7 @@
 {
-  "name": "tg",
+  "name": "gh-bin",
   "version": "1.0.0",
-  "description": "Redirect Telegram links directly to the Telegram App",
+  "description": "Let to download the latest binary from any GitHub repository",
   "main": "index.js",
   "scripts": {
     "start": "rollup -c --watch",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roslovets/tg.git"
+    "url": "git+https://github.com/roslovets/gh-bin.git"
   },
   "keywords": [],
   "author": "Pavel Roslovets",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/roslovets/tg/issues"
+    "url": "https://github.com/roslovets/gh-bin/issues"
   },
-  "homepage": "https://github.com/roslovets/tg#readme",
+  "homepage": "https://github.com/roslovets/gh-bin#readme",
   "devDependencies": {
     "autoprefixer": "^9.5.0",
     "cssnano": "^4.1.10",
