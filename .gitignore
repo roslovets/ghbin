@@ -1,6 +1,4 @@
 node_modules
-*.lock
-*-lock.json
 dist
 .vs
 *.njsproj.user
