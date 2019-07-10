@@ -1,107 +1,84 @@
 import './index.scss';
 
-var lang = navigator.language || navigator.userLanguage;
-if (lang === 'ru-RU') {
-    var TGSTR = 'Открыть в Telegram';
-    var WEBSTR = 'Открыть в браузере';
-}
-else {
-    TGSTR = 'Open in Telegram';
-    WEBSTR = 'Open in browser';
-}
+var query = window.location.hash.slice(1).replace(/^https?:\/\//i, '');
+var download = document.getElementById('download');
+var rlink = document.getElementById('rlink');
+console.log(query);
 
-var url = window.location.hash.slice(1).replace(/^https?:\/\//i, '');
-var tgopen = document.getElementById('tgopen');
-var webopen = document.getElementById('webopen');
-var target = document.getElementById('target');
-
-if (url) {
+if (query) {
     document.getElementById('buttons').style.display = 'inline-block';
 
-    document.getElementById('tglabel').textContent = TGSTR;
+    var params = query.split('#');
+    var repo = params[0];
 
-    var repo = window.location.hash.slice(1);
+    rlink.href = window.location.hash.slice(1);
+    document.getElementById('rname').textContent = 'Loading...';
+    rlink.style.display = 'inline-block';
 
-    var path = tgopen.pathname.split('/', 3);
-    var str = '';
-    var ischannel = false;
-
-    console.log(path);
-    console.log(repo);
-
-    switch (path[1]) {
-        case 'socks':
-            str = 'tg://socks' + tgopen.search;
-            break;
-        case 'share':
-            str = 'tg://msg_' + path[2] + tgopen.search;
-            break;
-        case 'joinchat':
-            str = 'tg://join?invite=' + path[2];
-            break;
-        case 'addstickers':
-            str = 'tg://addstickers?set=' + path[2];
-            break;
-        case 'proxy':
-            str = 'tg://proxy' + tgopen.search;
-            break;
-        default:
-            str = 'tg://resolve?domain=' + path[1] + tgopen.search.replace('?start=', '&start=');
-            if (path[2]) {
-                str += '&post=' + path[2];
-            }
-            else
-                ischannel = true;
-    }
-
-    tgopen.href = str || '#';
-
-    if (ischannel) {
-        webopen.href = "https://tfeed.me/" + path[1];
-        document.getElementById('weblabel').textContent = WEBSTR;
-        webopen.style.display = 'inline-block';
-    }
-
-    target.href = window.location.hash.slice(1);
-    document.getElementById('tlabel').textContent = url;
-    target.style.display = 'inline-block';
-
-    if (str) {
+    if (repo) {
         //window.location.href = str;
         window.rName = '';
         window.rver = '';
-        var cbInfo = function(res) {
+        window.binName = params[1];
+        var cbInfo = function (res) {
             console.log(res);
             window.rName = res.name;
-            document.getElementById('tlabel').textContent = window.rName + ' ' + window.rVer;
-        }
+            document.getElementById('rname').textContent = window.rName + ' ' + window.rVer;
+        };
 
-        var cbLatest = function(res) {
+        var cbLatest = function (res) {
             console.log(res);
             window.rVer = res.name;
-            document.getElementById('tlabel').textContent = window.rName + ' ' + window.rVer;
-            document.getElementById('target').href = res.html_url;
-        }
-        httpGetAsync('https://api.github.com/repos/' + repo, cbInfo);
-        httpGetAsync('https://api.github.com/repos/' + repo + '/releases/latest', cbLatest);
+            document.getElementById('rname').textContent = window.rName + ' ' + window.rVer;
+            document.getElementById('rlink').href = res.html_url;
+            var assets = res.assets.filter(function (asset) {
+                return asset.name === window.binName;
+            });
+            if (assets.length > 0) {
+                document.getElementById('dlabel').textContent = 'Download ' + assets[0].name;
+                document.getElementById('download').style.display = 'inline-block';
+                document.getElementById('dlabel').style.display = 'inline-block';
+            }
+        };
+
+        var cbErr = function (res) {
+            console.log(res);
+            var msg;
+            if (res.status === 404) {
+                msg = 'Repository not found';
+            }
+            else if (res.status === 403) {
+                msg = 'Error: try again later';
+            }
+            if (msg) {
+                document.getElementById('msg1').textContent = msg;
+                document.getElementById('msg1').style.display = 'inline-block';
+                document.getElementById('rlink').style.display = 'none';
+            }
+        };
     }
+
+    httpGetAsync('https://api.github.com/repos/' + repo, cbInfo, cbErr);
+    httpGetAsync('https://api.github.com/repos/' + repo + '/releases/latest', cbLatest, cbErr);
 }
+
 else {
     var loc = window.location.toString();
     if (loc[loc.length - 1] !== '#')
         window.location.href = loc + '#';
     document.getElementById('instr').style.display = 'inline-block';
 }
-tgopen.style.display = 'inline-block';
 
 
-function httpGetAsync(theUrl, callback)
-{
+function httpGetAsync(theUrl, cb, errcb) {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(JSON.parse(xmlHttp.responseText));
-    }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState === 4)
+            if (xmlHttp.status === 200)
+                cb(JSON.parse(xmlHttp.responseText));
+            else
+                errcb(xmlHttp);
+    };
+    xmlHttp.open('GET', theUrl, true); // true for asynchronous 
     xmlHttp.send(null);
 }

@@ -16,6 +16,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include="index.scss" />
     <Content Include="template.html" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />

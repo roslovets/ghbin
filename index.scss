@@ -32,7 +32,7 @@ html {
 body {
     @include fluid-type(200px, 960px, 11px, 12px * 2);
     min-height: 100%;
-    background: linear-gradient(to right, #f953c6, #b91d73);
+    background-image: linear-gradient(-225deg, #FF057C 0%, #8D0B93 50%, #321575 100%);
 }
 
 #wrapper {
@@ -44,23 +44,15 @@ body {
     #buttons {
         display: none;
 
-        #tgopen {
+        #download {
             display: none;
 
-            &:hover #tglabel:after {
+            &:hover #dlabel:after {
                 width: 100%;
             }
         }
 
-        #webopen {
-            display: none;
-
-            &:hover #weblabel:after {
-                width: 100%;
-            }
-        }
-
-        #target {
+        #rlink {
             position: relative;
             top: 55%;
             padding: 0.6em 1em 0.6em 1em;
@@ -115,6 +107,14 @@ a {
     display: none;
 }
 
+#msg1 {
+    display: none;
+}
+
+#dlabel {
+    display: none;
+}
+
 .white {
     color: #ffffff;
 }
@@ -127,6 +127,7 @@ a {
     text-align: center;
 }
 
-.mt {
+.my {
     margin-top: 10px;
+    margin-bottom: 10px;
 }
