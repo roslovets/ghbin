@@ -72,6 +72,7 @@ else {
 
 function httpGetAsync(theUrl, cb, errcb) {
     var xmlHttp = new XMLHttpRequest();
+    xmlHttp.timeout = 1000;
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4)
             if (xmlHttp.status === 200)
