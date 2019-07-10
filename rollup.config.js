@@ -7,7 +7,6 @@ import autoprefixer from 'autoprefixer';
 import postcss from 'postcss';
 import cssImport from 'postcss-import';
 import cssnano from 'cssnano';
-import crypto from 'crypto';
 
 export default {
     input: 'index.js',
@@ -39,7 +38,6 @@ export default {
                         console.error(err);
                     } else {
                         fs.writeFileSync('index.html', content);
-                        fs.writeFileSync('app.appcache', 'CACHE MANIFEST\n# ' + crypto.createHash('md5').update(content).digest('base64'));
                     }
                 });
             }
