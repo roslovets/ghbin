@@ -41,24 +41,21 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
 
-    #buttons {
+
+    #binary {
         display: none;
 
-        #download {
-            display: none;
-
-            &:hover #dlabel:after {
-                width: 100%;
-            }
+        &:hover #binlabel:after {
+            width: 100%;
         }
+    }
 
-        #rlink {
-            position: relative;
-            top: 55%;
-            padding: 0.6em 1em 0.6em 1em;
-            display: none;
-            text-decoration: none;
-        }
+    #repo {
+        position: relative;
+        top: 55%;
+        padding: 0.6em 1em 0.6em 1em;
+        display: none;
+        text-decoration: none;
     }
 }
 
@@ -87,6 +84,7 @@ a {
     position: relative;
     box-sizing: border-box;
     text-align: center;
+    display: none;
 }
 
 .btnlabel {
@@ -107,12 +105,8 @@ a {
     display: none;
 }
 
-#msg1 {
-    display: none;
-}
-
-#dlabel {
-    display: none;
+#msg3 {
+    margin-top: 10px;
 }
 
 .white {
@@ -128,6 +122,6 @@ a {
 }
 
 .my {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 0px;
+    margin-bottom: 5px;
 }

@@ -1,74 +1,126 @@
 import './index.scss';
 
 var query = window.location.hash.slice(1).replace(/^https?:\/\//i, '');
-var download = document.getElementById('download');
-var rlink = document.getElementById('rlink');
-console.log(query);
 
 if (query) {
-    document.getElementById('buttons').style.display = 'inline-block';
 
     var params = query.split('#');
     var repo = params[0];
 
-    rlink.href = window.location.hash.slice(1);
-    document.getElementById('rname').textContent = 'Loading...';
-    rlink.style.display = 'inline-block';
+    showMsg('msg1', 'Loading...');
 
     if (repo) {
-        //window.location.href = str;
         window.rName = '';
         window.rver = '';
         window.binName = params[1];
+
         var cbInfo = function (res) {
-            console.log(res);
             window.rName = res.name;
-            document.getElementById('rname').textContent = window.rName + ' ' + window.rVer;
+            window.rHome = res.html_url;
+            showRepo();
         };
 
-        var cbLatest = function (res) {
-            console.log(res);
-            window.rVer = res.name;
-            document.getElementById('rname').textContent = window.rName + ' ' + window.rVer;
-            document.getElementById('rlink').href = res.html_url;
-            var assets = res.assets.filter(function (asset) {
-                return asset.name === window.binName;
-            });
-            if (assets.length > 0) {
-                document.getElementById('dlabel').textContent = 'Download ' + assets[0].name;
-                document.getElementById('download').style.display = 'inline-block';
-                document.getElementById('dlabel').style.display = 'inline-block';
-            }
-        };
-
-        var cbErr = function (res) {
-            console.log(res);
+        var cbInfoErr = function (res) {
             var msg;
             if (res.status === 404) {
                 msg = 'Repository not found';
             }
-            else if (res.status === 403) {
+            else {
                 msg = 'Error: try again later';
             }
             if (msg) {
-                document.getElementById('msg1').textContent = msg;
-                document.getElementById('msg1').style.display = 'inline-block';
-                document.getElementById('rlink').style.display = 'none';
+                showMsg('msg1', msg);
+                showBtn('repo', false);
             }
+        };
+
+        var cbLatest = function (res) {
+
+            window.rVer = res.name;
+            window.rUrl = res.html_url;
+            var assets;
+
+            if (window.binName) {
+                assets = res.assets.filter(function (asset) {
+                    return asset.name === window.binName;
+                });
+            }
+            else {
+                if (res.assets) {
+                    assets = res.assets;
+                }
+            }
+            if (assets && assets.length > 0) {
+                window.rBin = assets[0];
+            }
+            showRepo();
+        };
+
+        var cbLatestErr = function (res) {
+            window.rVer = '<null>';
+            showRepo();
         };
     }
 
-    httpGetAsync('https://api.github.com/repos/' + repo, cbInfo, cbErr);
-    httpGetAsync('https://api.github.com/repos/' + repo + '/releases/latest', cbLatest, cbErr);
+    httpGetAsync('https://api.github.com/repos/' + repo, cbInfo, cbInfoErr);
+    httpGetAsync('https://api.github.com/repos/' + repo + '/releases/latest', cbLatest, cbLatestErr);
 }
 
 else {
     var loc = window.location.toString();
-    if (loc[loc.length - 1] !== '#')
+    if (loc[loc.length - 1] !== '#') {
         window.location.href = loc + '#';
-    document.getElementById('instr').style.display = 'inline-block';
+    }
+    showBtn('repo', 'GitHub Binary Downloader', 'https://github.com/roslovets/ghbin');
+    showBtn('binary', 'How to use', 'https://github.com/roslovets/ghbin/blob/master/README.md');
 }
 
+
+function showRepo() {
+    if (window.rName && window.rVer) {
+        if (window.rVer === '<null>') {
+            showBtn('repo', window.rName, window.rHome);
+        }
+        else {
+            showBtn('repo', window.rName + ' ' + window.rVer, window.rUrl);
+        }
+        showMsg('msg1', false);
+        if (window.rBin) {
+            showBtn('binary', 'Download ' + window.rBin.name, window.rBin.browser_download_url);
+            showMsg('msg3', '\u2193 downloading...');
+            window.location.href = window.rBin.browser_download_url;
+        }
+        else {
+            showMsg('msg2', 'Binary not found');
+        }
+    }
+}
+
+function showMsg(el, msg) {
+    if (msg) {
+        document.getElementById(el).textContent = msg;
+        document.getElementById(el).style.display = 'inline-block';
+    }
+    else {
+        document.getElementById(el).style.display = 'none';
+    }
+}
+
+function showBtn(el, label, href) {
+    var btn = document.getElementById(el);
+    var txt = btn.firstElementChild;
+    if (label) {
+        txt.textContent = label;
+        txt.style.display = 'inline-block';
+        btn.href = href;
+        btn.style.display = 'inline-block';
+    }
+    else {
+        txt.style.display = 'none';
+        btn.style.display = 'none';
+
+    }
+}
 
 function httpGetAsync(theUrl, cb, errcb) {
     var xmlHttp = new XMLHttpRequest();
@@ -80,6 +132,6 @@ function httpGetAsync(theUrl, cb, errcb) {
             else
                 errcb(xmlHttp);
     };
-    xmlHttp.open('GET', theUrl, true); // true for asynchronous 
+    xmlHttp.open('GET', theUrl, true);
     xmlHttp.send(null);
 }
