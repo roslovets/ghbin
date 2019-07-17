@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/roslovets/gh-bin#readme",
   "devDependencies": {
-    "autoprefixer": "^9.5.0",
+    "autoprefixer": "^9.6.1",
     "cssnano": "^4.1.10",
     "normalize.css": "^8.0.1",
     "postcss": "^7.0.14",
