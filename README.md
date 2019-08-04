@@ -2,7 +2,7 @@
 
 One-link downloader of the latest binary from GitHub.
 
-Allows to users download a binary form the latest release of your project with one click.
+Allows to users download a binary form the latest release of your project with one click. Use generated link in README.md, in download instructions or distribute it in another ways.
 
 ## How to use
 
